@@ -9,6 +9,12 @@ class CustomTheme {
         primaryColor: CommonColors.primaryColorDark,
         scaffoldBackgroundColor: CommonColors.scaffoldColorDark,
         fontFamily: 'AvenirNextLTPro', //3
+        iconTheme: const IconThemeData(
+          color: CommonColors.disabledColor,
+        ),
+        primaryIconTheme: const IconThemeData(
+          color: CommonColors.disabledColor,
+        ),
         buttonTheme: ButtonThemeData(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
