@@ -1,4 +1,5 @@
 import 'package:cinema_db/core/common_constants.dart';
+import 'package:cinema_db/core/image_picker_utils.dart';
 import 'package:cinema_db/core/network_info.dart';
 import 'package:cinema_db/features/cinema/data/data_source/local_data_source.dart';
 import 'package:cinema_db/features/cinema/data/repository/cinema_repository_impl.dart';
@@ -39,9 +40,10 @@ Future<void> init() async {
 
   // External Dependencies
   await Hive.initFlutter();
-  await Hive.openBox<Map<String, dynamic>>(CommonConstants.cinemaBoxName);
+  await Hive.openBox<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName);
   sl.registerLazySingleton<NetworkInfo>(
       () => NetworkInfoImpl(connectionChecker: sl()));
+  sl.registerLazySingleton<ImagePickerUtils>(() => ImagePickerUtilsImpl());
   sl.registerLazySingleton<http.Client>(() => http.Client());
   sl.registerLazySingleton<InternetConnectionChecker>(
       () => InternetConnectionChecker());

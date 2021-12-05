@@ -29,7 +29,7 @@ class MovieModel extends MovieEntity {
           isDeleted: isDeleted,
         );
 
-  factory MovieModel.from(Map<String, dynamic> map) {
+  factory MovieModel.from(Map<dynamic, dynamic> map) {
     return MovieModel(
       id: map['id'],
       name: map['name'],
@@ -46,8 +46,8 @@ class MovieModel extends MovieEntity {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<dynamic, dynamic> toJson() {
+    return <String, dynamic>{
       'id': id,
       'name': name,
       'poster': poster,

@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cinema_db/core/custom_colors.dart';
+import 'package:cinema_db/core/image_picker_utils.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_bloc.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_event.dart';
+import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -18,10 +22,25 @@ class MovieCreationRoute extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Container(
-              height: 200,
-              width: 100,
-              color: CommonColors.primaryColorDark,
+            GestureDetector(
+              onTap: () async {
+                final picker = sl<ImagePickerUtils>();
+                final posterPath = await picker.selectImageFromGallery();
+                // print('MovieCreationRoute.build $posterPath');
+                Provider.of<MovieDetailsProvider>(context, listen: false)
+                    .assignPoster(posterPath);
+              },
+              child: Container(
+                height: 200,
+                width: 100,
+                color: CommonColors.primaryColorDark,
+                child: Provider.of<MovieDetailsProvider>(context)
+                        .poster
+                        .isNotEmpty
+                    ? Image.file(
+                        File(Provider.of<MovieDetailsProvider>(context).poster))
+                    : const SizedBox(),
+              ),
             ),
             TextField(
               onChanged: (String name) {

@@ -17,7 +17,8 @@ class LocalDataSourceImpl extends LocalDataSource {
       MovieModel toRegister) async {
     try {
       // get the hive box for movie storage
-      final box = Hive.box<Map<String, dynamic>>(CommonConstants.cinemaBoxName);
+      final box =
+          Hive.box<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName);
       print('LocalDataSourceImpl.registerMovie $toRegister');
       // store the movie model
       box.put(toRegister.id, toRegister.toJson());
@@ -29,6 +30,7 @@ class LocalDataSourceImpl extends LocalDataSource {
         data: true,
       );
     } catch (ex) {
+      print('LocalDataSourceImpl.registerMovie $ex');
       // if any exception occurs, just send back a server exception
       // with a constant error for v1
       throw ServerException(
