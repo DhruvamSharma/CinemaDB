@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cinema_db/core/auth_utils.dart';
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/common_ui/common_textfield.dart';
 import 'package:cinema_db/core/custom_colors.dart';
@@ -5,6 +7,7 @@ import 'package:cinema_db/features/cinema/data/model/movie_model.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
 import 'package:cinema_db/features/cinema/presentation/widgets/movie_item.dart';
+import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -19,6 +22,13 @@ class CinemaListingRoute extends StatefulWidget {
 
 class _CinemaListingRouteState extends State<CinemaListingRoute> {
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  late AuthUtils authUtils;
+  @override
+  void initState() {
+    authUtils = sl<AuthUtils>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +36,30 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: CommonConstants.equalPadding * 2 - 10,
+                  top: CommonConstants.equalPadding * 3,
+                ),
+                child: GestureDetector(
+                  onTap: () async {
+                    final isSignedIn = await authUtils.isSignedIn();
+                  },
+                  child: CircleAvatar(
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                          imageUrl: authUtils.getProfilePicture()),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(
                 left: CommonConstants.equalPadding * 2 - 10,
-                top: CommonConstants.equalPadding * 6,
+                top: CommonConstants.equalPadding,
               ),
               child: Text(
                 CommonConstants.homeTitle,

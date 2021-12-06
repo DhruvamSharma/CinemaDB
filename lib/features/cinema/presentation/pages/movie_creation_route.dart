@@ -140,7 +140,7 @@ class MovieCreationRoute extends StatelessWidget {
       width: isPrimary ? 150 : MediaQuery.of(context).size.width,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: Provider.of<MovieDetailsProvider>(context).poster.isEmpty
+        color: isPrimary
             ? CommonColors.primaryColorDark.withOpacity(0.05)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(CommonConstants.cardRadius),

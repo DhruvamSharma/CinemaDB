@@ -15,4 +15,8 @@ class CommonConstants {
   // dimensions
   static const double cardRadius = 10.0;
   static const double equalPadding = 20.0;
+
+  // urls
+  static const String profileUrl =
+      'https://cdn.dribbble.com/users/1577045/screenshots/4914645/media/028d394ffb00cb7a4b2ef9915a384fd9.png?compress=1&resize=400x300';
 }

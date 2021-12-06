@@ -1,3 +1,4 @@
+import 'package:cinema_db/core/auth_utils.dart';
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/image_picker_utils.dart';
 import 'package:cinema_db/core/network_info.dart';
@@ -44,6 +45,7 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(
       () => NetworkInfoImpl(connectionChecker: sl()));
   sl.registerLazySingleton<ImagePickerUtils>(() => ImagePickerUtilsImpl());
+  sl.registerLazySingleton<AuthUtils>(() => AuthUtilsImpl());
   sl.registerLazySingleton<http.Client>(() => http.Client());
   sl.registerLazySingleton<InternetConnectionChecker>(
       () => InternetConnectionChecker());
