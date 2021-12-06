@@ -14,6 +14,8 @@ class CommonConstants {
   static const String editMovieTitle = 'Edit Movie';
   static const String updateMovieTitle = 'Update Collection';
   static const String moreDetailsOfMovie = 'Found more details for this movie';
+  static const String emptyCinemaTitle =
+      "Your watched list is empty. Let's add some";
 
   // dimensions
   static const double cardRadius = 10.0;

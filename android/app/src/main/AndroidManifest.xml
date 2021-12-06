@@ -2,7 +2,7 @@
     package="com.yellow_class.cinemadb.cinema_db">
    <application
         android:label="cinema_db"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -19,7 +19,6 @@ class LocalDataSourceImpl extends LocalDataSource {
   Future<RegisterMovieResponseModel> registerMovie(
       MovieModel toRegister) async {
     try {
-      print('LocalDataSourceImpl.registerMovie $toRegister');
       // get the hive box for movie storage
       final box =
           Hive.box<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName);

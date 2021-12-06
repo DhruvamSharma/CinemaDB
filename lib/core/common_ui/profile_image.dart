@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinema_db/core/auth_utils.dart';
 import 'package:cinema_db/injection_container.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfileImage extends StatefulWidget {
@@ -15,6 +16,14 @@ class _ProfileImageState extends State<ProfileImage> {
   @override
   void initState() {
     authUtils = sl<AuthUtils>();
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user == null) {
+        // do nothing
+      } else {
+        setState(() {});
+      }
+    });
     super.initState();
   }
 
@@ -22,7 +31,7 @@ class _ProfileImageState extends State<ProfileImage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final isSignedIn = await authUtils.signIn();
+        await authUtils.signIn();
         setState(() {});
       },
       child: ClipOval(

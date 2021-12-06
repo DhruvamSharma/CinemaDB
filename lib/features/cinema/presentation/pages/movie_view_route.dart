@@ -71,23 +71,23 @@ class MovieViewRoute extends StatelessWidget {
             72,
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(
-            top: CommonConstants.equalPadding * 3,
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                top: -80,
-                child: buildImageContainer(false, context),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: CommonConstants.equalPadding,
-                  right: CommonConstants.equalPadding,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: CommonConstants.equalPadding * 3,
+            ),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  top: -80,
+                  child: buildImageContainer(false, context),
                 ),
-                child: SingleChildScrollView(
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: CommonConstants.equalPadding,
+                    right: CommonConstants.equalPadding,
+                  ),
                   child: Column(
                     children: [
                       Center(
@@ -104,6 +104,10 @@ class MovieViewRoute extends StatelessWidget {
                           style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
+                      Text(
+                        state.director,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(
                           top: CommonConstants.equalPadding,
@@ -112,19 +116,19 @@ class MovieViewRoute extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '2020',
+                              state.releaseDate ?? '2020',
                               style: Theme.of(context).textTheme.caption,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: CommonConstants.equalPadding / 2),
                               child: Text(
-                                'Horror/Thriller',
+                                state.genre ?? 'Drama',
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ),
                             Text(
-                              '189 mins',
+                              state.runtime ?? '149 mins',
                               style: Theme.of(context).textTheme.caption,
                             )
                           ],
@@ -137,7 +141,7 @@ class MovieViewRoute extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const RatingWidget(rating: 3.5),
+                            RatingWidget(rating: buildRating(state)),
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: CommonConstants.equalPadding / 2),
@@ -145,7 +149,7 @@ class MovieViewRoute extends StatelessWidget {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                        text: '6.6',
+                                        text: state.imdbRating,
                                         style: Theme.of(context)
                                             .textTheme
                                             .caption!
@@ -169,16 +173,17 @@ class MovieViewRoute extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             top: CommonConstants.equalPadding * 3),
                         child: Text(
-                          'As the next step, here is your assignment below:-'
-                          'Build a simple application using Flutter compatible with Android/iOS devices.'
-                          'Build a simple aesthetic app to add/edit/delete/list movies that a user has watched.'
-                          'Show an infinite scrollable listview containing all the movies that a user has created.'
-                          'Implement a form to add a new movie or edit an existing one. (Fields to keep: Name, Director and a poster image of the movie)'
-                          'Each list item should have a delete icon to remove that movie from the list and an edit icon to allow edit on that movie.'
-                          'Store the data in either hive or sqflite local database.',
+                          state.plot ??
+                              'As the next step, here is your assignment below:-'
+                                  'Build a simple application using Flutter compatible with Android/iOS devices.'
+                                  'Build a simple aesthetic app to add/edit/delete/list movies that a user has watched.'
+                                  'Show an infinite scrollable listview containing all the movies that a user has created.'
+                                  'Implement a form to add a new movie or edit an existing one. (Fields to keep: Name, Director and a poster image of the movie)'
+                                  'Each list item should have a delete icon to remove that movie from the list and an edit icon to allow edit on that movie.'
+                                  'Store the data in either hive or sqflite local database.',
                           style: Theme.of(context).textTheme.caption,
                           textAlign: TextAlign.center,
-                          maxLines: 2,
+                          maxLines: 5,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -214,8 +219,8 @@ class MovieViewRoute extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }
@@ -241,6 +246,18 @@ class MovieViewRoute extends StatelessWidget {
     );
 
     return movie;
+  }
+
+  num buildRating(MovieDetailsProvider data) {
+    if (data.imdbRating != null) {
+      if (data.imdbRating!.isNotEmpty) {
+        return num.parse(data.imdbRating ?? '0');
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
   }
 
   Widget buildImageContainer(bool isPrimary, BuildContext context) {
