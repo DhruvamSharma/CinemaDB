@@ -1,3 +1,4 @@
+import 'package:cinema_db/core/common_constants.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class Failure extends Equatable {
@@ -51,19 +52,17 @@ class PlatFormFailure extends Failure {
       ];
 }
 
-const String serverFailureMessage = 'Server Failure';
-const String cacheFailureMessage = 'Cache Failure';
-const String cacheFailureCode = '101';
-const String platformExceptionMessage = "Platform Exception Occurred";
-
 String mapFailureToErrorMessage(Failure failure) {
   switch (failure.runtimeType) {
     case ServerFailure:
-      return (failure as ServerFailure).message ?? serverFailureMessage;
+      return (failure as ServerFailure).message ??
+          CommonConstants.serverFailureMessage;
     case CacheFailure:
-      return (failure as CacheFailure).message ?? cacheFailureMessage;
+      return (failure as CacheFailure).message ??
+          CommonConstants.cacheFailureMessage;
     case PlatFormFailure:
-      return (failure as PlatFormFailure).message ?? platformExceptionMessage;
+      return (failure as PlatFormFailure).message ??
+          CommonConstants.platformExceptionMessage;
     default:
       return 'Unexpected Error';
   }
@@ -72,11 +71,14 @@ String mapFailureToErrorMessage(Failure failure) {
 String mapFailureToErrorCode(Failure failure) {
   switch (failure.runtimeType) {
     case ServerFailure:
-      return (failure as ServerFailure).errorCode ?? serverFailureMessage;
+      return (failure as ServerFailure).errorCode ??
+          CommonConstants.serverFailureMessage;
     case CacheFailure:
-      return (failure as CacheFailure).errorCode ?? cacheFailureMessage;
+      return (failure as CacheFailure).errorCode ??
+          CommonConstants.cacheFailureMessage;
     case PlatFormFailure:
-      return (failure as PlatFormFailure).errorCode ?? platformExceptionMessage;
+      return (failure as PlatFormFailure).errorCode ??
+          CommonConstants.platformExceptionMessage;
     default:
       return 'Unexpected Error';
   }

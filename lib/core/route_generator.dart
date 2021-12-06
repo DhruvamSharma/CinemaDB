@@ -1,6 +1,9 @@
+import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_bloc.dart';
 import 'package:cinema_db/features/cinema/presentation/pages/cinema_listing_route.dart';
 import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
+import 'package:cinema_db/features/cinema/presentation/pages/movie_edit_route.dart';
+import 'package:cinema_db/features/cinema/presentation/pages/movie_view_route.dart';
 import 'package:cinema_db/features/login/presentation/pages/login_route.dart';
 import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,13 +19,57 @@ class RouteGenerator {
       case CinemaListingRoute.routeName:
         return _transitionRoute(
             const CinemaListingRoute(), CinemaListingRoute.routeName);
+      case MovieViewRoute.routeName:
+        final MovieEntity movie = settings.arguments as MovieEntity;
+        return _transitionRoute(
+            BlocProvider<CinemaBloc>(
+              create: (_) => sl<CinemaBloc>(),
+              child: ChangeNotifierProvider<MovieDetailsProvider>(
+                create: (_) => MovieDetailsProvider(
+                  name: movie.name,
+                  poster: movie.poster,
+                  director: movie.director,
+                  id: movie.id,
+                  isDeleted: movie.isDeleted,
+                  isBookmarked: movie.isBookmarked,
+                ),
+                child: const MovieViewRoute(),
+              ),
+            ),
+            MovieViewRoute.routeName);
+      case MovieEditRoute.routeName:
+        final MovieEntity movie = settings.arguments as MovieEntity;
+        return _transitionRoute(
+            BlocProvider<CinemaBloc>(
+              create: (_) => sl<CinemaBloc>(),
+              child: ChangeNotifierProvider<MovieDetailsProvider>(
+                create: (_) => MovieDetailsProvider(
+                  name: movie.name,
+                  poster: movie.poster,
+                  director: movie.director,
+                  id: movie.id,
+                  isDeleted: movie.isDeleted,
+                  isBookmarked: movie.isBookmarked,
+                ),
+                child: const MovieEditRoute(),
+              ),
+            ),
+            MovieEditRoute.routeName);
       case MovieCreationRoute.routeName:
         return _transitionRoute(
             BlocProvider<CinemaBloc>(
               create: (_) => sl<CinemaBloc>(),
               child: ChangeNotifierProvider<MovieDetailsProvider>(
-                  create: (_) => MovieDetailsProvider(),
-                  child: const MovieCreationRoute()),
+                create: (_) => MovieDetailsProvider(
+                  name: '',
+                  poster: '',
+                  director: '',
+                  id: '',
+                  isDeleted: false,
+                  isBookmarked: false,
+                ),
+                child: const MovieCreationRoute(),
+              ),
             ),
             MovieCreationRoute.routeName);
 

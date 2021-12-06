@@ -6,14 +6,19 @@ import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/common_ui/common_textfield.dart';
 import 'package:cinema_db/core/custom_colors.dart';
 import 'package:cinema_db/core/image_picker_utils.dart';
-import 'package:cinema_db/features/cinema/presentation/widgets/movie_register_button.dart';
+import 'package:cinema_db/core/movie_errors.dart';
+import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
+import 'package:cinema_db/features/cinema/presentation/manager/cinema_bloc.dart';
+import 'package:cinema_db/features/cinema/presentation/manager/cinema_event.dart';
+import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
 import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-class MovieCreationRoute extends StatelessWidget {
-  const MovieCreationRoute({Key? key}) : super(key: key);
-  static const String routeName = 'yellow-class_app_movie-registration';
+class MovieEditRoute extends StatelessWidget {
+  const MovieEditRoute({Key? key}) : super(key: key);
+  static const String routeName = 'yellow-class_app_movie-update';
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +38,7 @@ class MovieCreationRoute extends StatelessWidget {
           children: [
             Positioned(
               top: -80,
-              child: buildImageContainer(
-                  false,
-                  context,
-                  Provider.of<MovieDetailsProvider>(context)
-                      .isImageFromInternet),
+              child: buildImageContainer(false, context),
             ),
             Padding(
               padding: const EdgeInsets.only(
@@ -57,11 +58,9 @@ class MovieCreationRoute extends StatelessWidget {
                                 listen: false)
                             .assignPoster(posterPath);
                       },
-                      child: buildImageContainer(
-                          true,
-                          context,
-                          Provider.of<MovieDetailsProvider>(context)
-                              .isImageFromInternet),
+                      child: Hero(
+                          tag: Provider.of<MovieDetailsProvider>(context).id,
+                          child: buildImageContainer(true, context)),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -69,6 +68,8 @@ class MovieCreationRoute extends StatelessWidget {
                       ),
                       child: CommonTextField(
                         label: CommonConstants.movieNameLabel,
+                        initialValue:
+                            Provider.of<MovieDetailsProvider>(context).name,
                         onChanged: (String name) {
                           Provider.of<MovieDetailsProvider>(context,
                                   listen: false)
@@ -77,16 +78,34 @@ class MovieCreationRoute extends StatelessWidget {
                       ),
                     ),
                     CommonTextField(
+                      label: CommonConstants.directorNameLabel,
                       initialValue:
                           Provider.of<MovieDetailsProvider>(context).director,
-                      label: CommonConstants.directorNameLabel,
                       onChanged: (String director) {
                         Provider.of<MovieDetailsProvider>(context,
                                 listen: false)
                             .assignDirector(director);
                       },
                     ),
-                    const MovieRegisterButton(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: CommonConstants.equalPadding * 2),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: MaterialButton(
+                          child: const Text(CommonConstants.updateMovieTitle),
+                          color: CommonColors.buttonColorDark,
+                          onPressed: () {
+                            if (MovieErrors.canPostMovie(context)) {
+                              BlocProvider.of<CinemaBloc>(context).add(
+                                  RegisterMovieEvent(
+                                      movie: createMovie(context)));
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
+                      ),
+                    ),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -108,8 +127,25 @@ class MovieCreationRoute extends StatelessWidget {
     );
   }
 
-  Widget buildImageContainer(
-      bool isPrimary, BuildContext context, bool isImageFromInternet) {
+  MovieEntity createMovie(BuildContext context) {
+    final state = Provider.of<MovieDetailsProvider>(context, listen: false);
+    return MovieEntity(
+      id: state.id,
+      name: state.name,
+      poster: state.poster,
+      releaseDate: state.releaseDate,
+      runtime: state.runtime,
+      genre: state.genre,
+      plot: state.plot,
+      imdbId: state.imdbId,
+      imdbRating: state.imdbRating,
+      director: state.director,
+      isBookmarked: state.isBookmarked,
+      isDeleted: state.isDeleted,
+    );
+  }
+
+  Widget buildImageContainer(bool isPrimary, BuildContext context) {
     return Container(
       height: isPrimary ? 230 : 350,
       width: isPrimary ? 150 : MediaQuery.of(context).size.width,
@@ -121,15 +157,14 @@ class MovieCreationRoute extends StatelessWidget {
         borderRadius: BorderRadius.circular(CommonConstants.cardRadius),
       ),
       child: Provider.of<MovieDetailsProvider>(context).poster.isNotEmpty
-          ? buildImageWithShade(context, isPrimary, isImageFromInternet)
+          ? buildImageWithShade(context, isPrimary)
           : const SizedBox(),
     );
   }
 
-  Widget buildImageWithShade(
-      BuildContext context, bool isPrimary, bool isImageFromInternet) {
+  Widget buildImageWithShade(BuildContext context, bool isPrimary) {
     final posterUrl = Provider.of<MovieDetailsProvider>(context).poster;
-    final imageWidget = isImageFromInternet
+    final imageWidget = posterUrl.contains('http')
         ? CachedNetworkImage(
             imageUrl: posterUrl,
             fit: BoxFit.cover,
@@ -164,90 +199,5 @@ class MovieCreationRoute extends StatelessWidget {
         child: imageWidget,
       ),
     );
-  }
-}
-
-class MovieDetailsProvider extends ChangeNotifier {
-  String id;
-  String name;
-  String poster = '';
-  String director;
-  String? releaseDate;
-  String? runtime;
-  String? genre;
-  String? plot;
-  String? imdbId;
-  String? imdbRating;
-  bool isBookmarked;
-  bool isDeleted;
-  bool isImageFromInternet = false;
-  MovieDetailsProvider({
-    required this.name,
-    required this.poster,
-    required this.director,
-    required this.id,
-    required this.isBookmarked,
-    required this.isDeleted,
-    this.releaseDate,
-    this.runtime,
-    this.imdbRating,
-    this.genre,
-    this.plot,
-    this.imdbId,
-  });
-
-  void assignName(String variable) {
-    name = variable;
-    notifyListeners();
-  }
-
-  void assignReleaseDate(String variable) {
-    releaseDate = variable;
-    notifyListeners();
-  }
-
-  void assignRuntime(String variable) {
-    runtime = variable;
-    notifyListeners();
-  }
-
-  void assignImdbRating(String variable) {
-    imdbRating = variable;
-    notifyListeners();
-  }
-
-  void assignPlot(String variable) {
-    plot = variable;
-    notifyListeners();
-  }
-
-  void assignGenre(String variable) {
-    genre = variable;
-    notifyListeners();
-  }
-
-  void assignImdbId(String variable) {
-    imdbId = variable;
-    notifyListeners();
-  }
-
-  void assignIsImageFromInternet(bool variable) {
-    isImageFromInternet = variable;
-    notifyListeners();
-  }
-
-  void assignIsBookmarked(bool variable) {
-    isBookmarked = variable;
-    notifyListeners();
-  }
-
-  void assignDirector(String variable) {
-    director = variable;
-    notifyListeners();
-  }
-
-  void assignPoster(String variable) {
-    poster = variable;
-    notifyListeners();
   }
 }
