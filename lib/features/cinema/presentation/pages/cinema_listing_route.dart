@@ -143,11 +143,15 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                                     textAlign: TextAlign.center,
                                   ),
                                   color: CommonColors.buttonColorDark,
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      MovieCreationRoute.routeName,
-                                    );
+                                  onPressed: () async {
+                                    if (await authUtils.isSignedIn()) {
+                                      Navigator.pushNamed(context,
+                                          MovieCreationRoute.routeName);
+                                    } else {
+                                      await authUtils.signIn();
+                                      Navigator.pushNamed(context,
+                                          MovieCreationRoute.routeName);
+                                    }
                                   },
                                 ),
                               ),
