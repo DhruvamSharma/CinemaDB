@@ -114,22 +114,66 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                         CommonConstants.cinemaBoxName)
                     .listenable(),
                 builder: (context, Box<Map<dynamic, dynamic>> box, widget) {
-                  return GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 20.0,
-                            childAspectRatio: 0.55,
-                            crossAxisSpacing: 20.0),
-                    itemBuilder: (_, index) {
-                      final item = box.getAt(index);
-                      final movieEntity = MovieModel.from(item!);
-                      return _sizeIt(_, movieEntity);
-                    },
-                    itemCount: box.keys.length,
-                  );
+                  if (box.keys.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          top: CommonConstants.equalPadding * 3),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              CommonConstants.emptyCinemaTitle,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5!
+                                  .copyWith(
+                                    color: CommonColors.lightColor
+                                        .withOpacity(0.5),
+                                  ),
+                              textAlign: TextAlign.center,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: CommonConstants.equalPadding),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: MaterialButton(
+                                  child: const Text(
+                                    CommonConstants.registerMovieTitle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  color: CommonColors.buttonColorDark,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      MovieCreationRoute.routeName,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 20.0,
+                              childAspectRatio: 0.55,
+                              crossAxisSpacing: 20.0),
+                      itemBuilder: (_, index) {
+                        final item = box.getAt(index);
+                        final movieEntity = MovieModel.from(item!);
+                        return _sizeIt(_, movieEntity);
+                      },
+                      itemCount: box.keys.length,
+                    );
+                  }
                 },
               ),
             ),

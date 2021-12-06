@@ -164,7 +164,17 @@ class _MovieRegisterButtonState extends State<MovieRegisterButton> {
             isLoading = false;
           });
           // show error
-          MovieErrors.canPostMovie(context);
+          if (MovieErrors.canPostMovie(context)) {
+            final providerState =
+                Provider.of<MovieDetailsProvider>(context, listen: false);
+            if (providerState.poster.isEmpty) {
+              providerState.assignPoster(CommonConstants.emptyImagePLaceHolder);
+              providerState.assignIsImageFromInternet(true);
+            }
+            BlocProvider.of<CinemaBloc>(context)
+                .add(RegisterMovieEvent(movie: createMovie(context)));
+            Navigator.pop(context);
+          }
         }
       },
       child: Padding(

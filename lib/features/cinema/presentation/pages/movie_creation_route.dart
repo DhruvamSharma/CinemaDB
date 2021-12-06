@@ -188,12 +188,12 @@ class MovieDetailsProvider extends ChangeNotifier {
     required this.id,
     required this.isBookmarked,
     required this.isDeleted,
-    this.releaseDate,
-    this.runtime,
-    this.imdbRating,
-    this.genre,
-    this.plot,
-    this.imdbId,
+    required this.releaseDate,
+    required this.runtime,
+    required this.imdbRating,
+    required this.genre,
+    required this.plot,
+    required this.imdbId,
   });
 
   void assignName(String variable) {
