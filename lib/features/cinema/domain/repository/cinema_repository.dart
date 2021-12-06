@@ -6,5 +6,6 @@ import 'package:dartz/dartz.dart';
 abstract class CinemaRepository {
   Future<Either<Failure, BaseEntity<bool>>> registerMovie(
       MovieEntity toRegister);
-  Future<Either<Failure, BaseEntity<bool>>> updateMovie(MovieEntity toRegister);
+  Future<Either<Failure, BaseEntity<MovieEntity>>> fetchMovieDetails(
+      String movieName);
 }
