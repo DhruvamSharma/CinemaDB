@@ -8,6 +8,7 @@ class CommonColors {
 
   static const Color accentColor = Colors.amber;
   static const Color disabledColor = Colors.grey;
+  static const Color lightColor = Colors.white;
 
   static final Map<int, Color> _color = {
     50: const Color.fromRGBO(136, 14, 79, .1),

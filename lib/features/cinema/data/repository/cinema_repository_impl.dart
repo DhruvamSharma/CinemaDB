@@ -48,4 +48,19 @@ class CinemaRepositoryImpl implements CinemaRepository {
       isDeleted: entity.isDeleted,
     );
   }
+
+  @override
+  Future<Either<Failure, BaseEntity<bool>>> updateMovie(
+      MovieEntity toRegister) async {
+    try {
+      final response = await localDataSource
+          .updateMovie(_convertMovieModelToEntity(toRegister));
+      return Right(response);
+    } on ServerException catch (ex) {
+      return Left(ServerFailure(
+        message: ex.message,
+        errorCode: ex.errorCode,
+      ));
+    }
+  }
 }

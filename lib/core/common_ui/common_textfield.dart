@@ -3,8 +3,15 @@ import 'package:cinema_db/core/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 class CommonTextField extends StatelessWidget {
-  const CommonTextField({required this.onChanged, Key? key}) : super(key: key);
+  const CommonTextField(
+      {required this.onChanged,
+      this.showIcon = false,
+      this.label = CommonConstants.searchTitle,
+      Key? key})
+      : super(key: key);
   final Function onChanged;
+  final bool showIcon;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +22,12 @@ class CommonTextField extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: CommonConstants.equalPadding),
-        child: const TextField(
+        child: TextField(
+          onChanged: (_) => onChanged(_),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Search',
-            icon: Icon(Icons.search),
+            hintText: label,
+            icon: showIcon ? const Icon(Icons.search) : const SizedBox(),
           ),
         ),
       ),

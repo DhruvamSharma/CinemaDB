@@ -1,5 +1,6 @@
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/common_ui/common_textfield.dart';
+import 'package:cinema_db/core/custom_colors.dart';
 import 'package:cinema_db/features/cinema/data/model/movie_model.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
@@ -39,6 +40,16 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
             ),
             Padding(
               padding: const EdgeInsets.only(
+                left: CommonConstants.equalPadding + 10,
+                top: CommonConstants.equalPadding / 2,
+              ),
+              child: Text(
+                CommonConstants.homeSubtitle,
+                style: Theme.of(context).textTheme.caption,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
                 left: CommonConstants.equalPadding,
                 top: CommonConstants.equalPadding,
               ),
@@ -48,6 +59,7 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                     height: 50,
                     width: 2 * MediaQuery.of(context).size.width / 3,
                     child: CommonTextField(
+                      showIcon: true,
                       onChanged: () {},
                     ),
                   ),
@@ -58,7 +70,10 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                           Navigator.pushNamed(
                               context, MovieCreationRoute.routeName);
                         },
-                        icon: const Icon(Icons.create)),
+                        icon: Icon(
+                          Icons.create,
+                          color: CommonColors.primaryColorDark,
+                        )),
                   )
                 ],
               ),
@@ -80,7 +95,7 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                             crossAxisCount: 2,
                             mainAxisSpacing: 20.0,
                             childAspectRatio: 0.6,
-                            crossAxisSpacing: 10.0),
+                            crossAxisSpacing: 20.0),
                     itemBuilder: (_, index) {
                       final item = box.getAt(index);
                       final movieEntity = MovieModel.from(item!);
