@@ -1,7 +1,14 @@
+import 'package:cinema_db/core/auth_utils.dart';
 import 'package:cinema_db/core/common_constants.dart';
+import 'package:cinema_db/core/common_ui/common_textfield.dart';
+import 'package:cinema_db/core/common_ui/profile_image.dart';
+import 'package:cinema_db/core/custom_colors.dart';
 import 'package:cinema_db/features/cinema/data/model/movie_model.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
+import 'package:cinema_db/features/cinema/presentation/pages/movie_view_route.dart';
+import 'package:cinema_db/features/cinema/presentation/widgets/movie_item.dart';
+import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -16,59 +23,131 @@ class CinemaListingRoute extends StatefulWidget {
 
 class _CinemaListingRouteState extends State<CinemaListingRoute> {
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+  late AuthUtils authUtils;
+  @override
+  void initState() {
+    authUtils = sl<AuthUtils>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () async {
-        await Navigator.pushNamed(context, MovieCreationRoute.routeName);
-        final keys =
-            Hive.box<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName).keys;
-        listKey.currentState?.insertItem(keys.length - 1);
-      }),
-      body: ValueListenableBuilder(
-        valueListenable:
-            Hive.box<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName)
-                .listenable(),
-        builder: (context, Box<Map<dynamic, dynamic>> box, widget) {
-          return AnimatedList(
-            key: listKey,
-            initialItemCount: box.keys.length,
-            itemBuilder: (_, index, animation) {
-              final item = box.getAt(index);
-              final movieEntity = MovieModel.from(item!);
-              return GestureDetector(
-                  onTap: () {
-                    listKey.currentState!.removeItem(
-                        index,
-                        (_, animation) =>
-                            sizeIt(context, movieEntity, animation),
-                        duration: const Duration(milliseconds: 500));
-                    box.delete(box.keyAt(index));
-                  },
-                  child: sizeIt(_, movieEntity, animation));
-            },
-          );
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: CommonConstants.equalPadding * 2 - 10,
+                  top: CommonConstants.equalPadding * 3,
+                ),
+                child: ProfileImage(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: CommonConstants.equalPadding * 2 - 10,
+                top: CommonConstants.equalPadding,
+              ),
+              child: Text(
+                CommonConstants.homeTitle,
+                style: Theme.of(context).textTheme.headline5!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: CommonConstants.equalPadding + 10,
+                top: CommonConstants.equalPadding / 2,
+              ),
+              child: Text(
+                CommonConstants.homeSubtitle,
+                style: Theme.of(context).textTheme.caption,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: CommonConstants.equalPadding,
+                top: CommonConstants.equalPadding,
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    height: 50,
+                    width: 2 * MediaQuery.of(context).size.width / 3,
+                    child: CommonTextField(
+                      showIcon: true,
+                      onChanged: () {},
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IconButton(
+                        onPressed: () async {
+                          if (await authUtils.isSignedIn()) {
+                            Navigator.pushNamed(
+                                context, MovieCreationRoute.routeName);
+                          } else {
+                            await authUtils.signIn();
+                            Navigator.pushNamed(
+                                context, MovieCreationRoute.routeName);
+                          }
+                        },
+                        icon: Icon(
+                          Icons.create,
+                          color: CommonColors.primaryColorDark,
+                        )),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(
+                CommonConstants.equalPadding,
+              ),
+              child: ValueListenableBuilder(
+                valueListenable: Hive.box<Map<dynamic, dynamic>>(
+                        CommonConstants.cinemaBoxName)
+                    .listenable(),
+                builder: (context, Box<Map<dynamic, dynamic>> box, widget) {
+                  return GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20.0,
+                            childAspectRatio: 0.55,
+                            crossAxisSpacing: 20.0),
+                    itemBuilder: (_, index) {
+                      final item = box.getAt(index);
+                      final movieEntity = MovieModel.from(item!);
+                      return _sizeIt(_, movieEntity);
+                    },
+                    itemCount: box.keys.length,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget sizeIt(BuildContext context, MovieEntity item, animation) {
-    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(-1, 0),
-        end: const Offset(0, 0),
-      ).animate(animation),
-      child: SizedBox(
-        // Actual widget to display
-        height: 128.0,
-        child: Card(
-          child: Center(
-            child: Text('Item ${item.name}', style: textStyle),
-          ),
-        ),
-      ),
+  Widget _sizeIt(
+    BuildContext context,
+    MovieEntity item,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, MovieViewRoute.routeName, arguments: item);
+      },
+      child: MovieItem(data: item),
     );
   }
 }

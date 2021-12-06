@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class CommonColors {
   static final primaryColorDark = _getColor(0xFFA9C8F6);
-  static final Color scaffoldColorDark = _getColor(0xFF444444);
+  static final Color scaffoldColorDark = _getColor(0xFF232222);
   static final Color buttonColorDark = _getColor(0xFF778BD9);
+  static final Color textFieldContainerColor = _getColor(0xFF2c2c2c);
+
+  static const Color accentColor = Colors.amber;
+  static const Color disabledColor = Colors.grey;
+  static const Color lightColor = Colors.white;
 
   static final Map<int, Color> _color = {
     50: const Color.fromRGBO(136, 14, 79, .1),

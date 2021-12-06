@@ -8,15 +8,15 @@ import 'package:cinema_db/core/image_picker_utils.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_bloc.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_event.dart';
+import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
 import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
-class MovieCreationRoute extends StatelessWidget {
-  const MovieCreationRoute({Key? key}) : super(key: key);
-  static const String routeName = 'yellow-class_app_movie-registration';
+class MovieEditRoute extends StatelessWidget {
+  const MovieEditRoute({Key? key}) : super(key: key);
+  static const String routeName = 'yellow-class_app_movie-update';
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,9 @@ class MovieCreationRoute extends StatelessWidget {
                                 listen: false)
                             .assignPoster(posterPath);
                       },
-                      child: buildImageContainer(true, context),
+                      child: Hero(
+                          tag: Provider.of<MovieDetailsProvider>(context).id,
+                          child: buildImageContainer(true, context)),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -64,6 +66,8 @@ class MovieCreationRoute extends StatelessWidget {
                       ),
                       child: CommonTextField(
                         label: CommonConstants.movieNameLabel,
+                        initialValue:
+                            Provider.of<MovieDetailsProvider>(context).name,
                         onChanged: (String name) {
                           Provider.of<MovieDetailsProvider>(context,
                                   listen: false)
@@ -73,6 +77,8 @@ class MovieCreationRoute extends StatelessWidget {
                     ),
                     CommonTextField(
                       label: CommonConstants.directorNameLabel,
+                      initialValue:
+                          Provider.of<MovieDetailsProvider>(context).director,
                       onChanged: (String director) {
                         Provider.of<MovieDetailsProvider>(context,
                                 listen: false)
@@ -85,7 +91,7 @@ class MovieCreationRoute extends StatelessWidget {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width / 2,
                         child: MaterialButton(
-                          child: const Text(CommonConstants.registerMovieTitle),
+                          child: const Text(CommonConstants.updateMovieTitle),
                           color: CommonColors.buttonColorDark,
                           onPressed: () {
                             BlocProvider.of<CinemaBloc>(context).add(
@@ -119,18 +125,18 @@ class MovieCreationRoute extends StatelessWidget {
   MovieEntity createMovie(BuildContext context) {
     final state = Provider.of<MovieDetailsProvider>(context, listen: false);
     return MovieEntity(
-      id: const Uuid().v4(),
+      id: state.id,
       name: state.name,
       poster: state.poster,
-      releaseDate: '',
-      runtime: '',
-      genre: '',
-      plot: '',
-      imdbId: '',
-      imdbRating: '',
+      releaseDate: state.releaseDate,
+      runtime: state.runtime,
+      genre: state.genre,
+      plot: state.plot,
+      imdbId: state.imdbId,
+      imdbRating: state.imdbRating,
       director: state.director,
-      isBookmarked: false,
-      isDeleted: false,
+      isBookmarked: state.isBookmarked,
+      isDeleted: state.isDeleted,
     );
   }
 
@@ -182,53 +188,5 @@ class MovieCreationRoute extends StatelessWidget {
         child: imageWidget,
       ),
     );
-  }
-}
-
-class MovieDetailsProvider extends ChangeNotifier {
-  String id;
-  String name;
-  String poster = '';
-  String director;
-  String? releaseDate;
-  String? runtime;
-  String? genre;
-  String? plot;
-  String? imdbId;
-  String? imdbRating;
-  bool isBookmarked;
-  bool isDeleted;
-  MovieDetailsProvider({
-    required this.name,
-    required this.poster,
-    required this.director,
-    required this.id,
-    required this.isBookmarked,
-    required this.isDeleted,
-    this.releaseDate,
-    this.runtime,
-    this.imdbRating,
-    this.genre,
-    this.plot,
-  });
-
-  void assignName(String variable) {
-    name = variable;
-    notifyListeners();
-  }
-
-  void assignIsBookmarked(bool variable) {
-    isBookmarked = variable;
-    notifyListeners();
-  }
-
-  void assignDirector(String variable) {
-    director = variable;
-    notifyListeners();
-  }
-
-  void assignPoster(String variable) {
-    poster = variable;
-    notifyListeners();
   }
 }
