@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 void main() async {
   await di.init();
   await Firebase.initializeApp();
+  // await Hive.box<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName).clear();
   runApp(const MyApp());
 }
 

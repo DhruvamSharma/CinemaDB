@@ -31,10 +31,15 @@ class MovieItem extends StatelessWidget {
                   child: SizedBox(
                       height: 230,
                       width: 150,
-                      child: Image.file(
-                        File(data.poster),
-                        fit: BoxFit.cover,
-                      )),
+                      child: data.poster.contains('http')
+                          ? CachedNetworkImage(
+                              imageUrl: data.poster,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              File(data.poster),
+                              fit: BoxFit.cover,
+                            )),
                 ),
               )
             else

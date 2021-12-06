@@ -1,6 +1,5 @@
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/exceptions.dart';
-import 'package:cinema_db/core/failures.dart';
 import 'package:cinema_db/features/cinema/data/model/movie_model.dart';
 import 'package:cinema_db/features/cinema/data/model/register_movie_response_model.dart';
 import 'package:hive/hive.dart';
@@ -20,6 +19,7 @@ class LocalDataSourceImpl extends LocalDataSource {
   Future<RegisterMovieResponseModel> registerMovie(
       MovieModel toRegister) async {
     try {
+      print('LocalDataSourceImpl.registerMovie $toRegister');
       // get the hive box for movie storage
       final box =
           Hive.box<Map<dynamic, dynamic>>(CommonConstants.cinemaBoxName);
@@ -36,8 +36,8 @@ class LocalDataSourceImpl extends LocalDataSource {
       // if any exception occurs, just send back a server exception
       // with a constant error for v1
       throw ServerException(
-        message: cacheFailureMessage,
-        errorCode: cacheFailureCode,
+        message: CommonConstants.cacheFailureMessage,
+        errorCode: CommonConstants.cacheFailureCode,
       );
     }
   }
@@ -61,8 +61,8 @@ class LocalDataSourceImpl extends LocalDataSource {
       // if any exception occurs, just send back a server exception
       // with a constant error for v1
       throw ServerException(
-        message: cacheFailureMessage,
-        errorCode: cacheFailureCode,
+        message: CommonConstants.cacheFailureMessage,
+        errorCode: CommonConstants.cacheFailureCode,
       );
     }
   }

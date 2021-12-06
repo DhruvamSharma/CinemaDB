@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/common_ui/rating_star.dart';
 import 'package:cinema_db/core/custom_colors.dart';
@@ -260,10 +261,16 @@ class MovieViewRoute extends StatelessWidget {
   }
 
   Widget buildImageWithShade(BuildContext context, bool isPrimary) {
-    final imageWidget = Image.file(
-      File(Provider.of<MovieDetailsProvider>(context).poster),
-      fit: BoxFit.cover,
-    );
+    final posterUrl = Provider.of<MovieDetailsProvider>(context).poster;
+    final imageWidget = posterUrl.contains('http')
+        ? CachedNetworkImage(
+            imageUrl: posterUrl,
+            fit: BoxFit.cover,
+          )
+        : Image.file(
+            File(posterUrl),
+            fit: BoxFit.cover,
+          );
 
     if (isPrimary) {
       return imageWidget;

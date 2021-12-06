@@ -21,4 +21,17 @@ class CommonConstants {
   // urls
   static const String profileUrl =
       'https://weareroast.com/wp-content/uploads/2018/10/925000521s.png';
+  static const String emptyImagePLaceHolder =
+      'https://images.srkh.in/wp-content/uploads/2020/08/Dark-Empty-road-nature-WhatsApp-Dp-Image.jpg';
+
+  // errors
+  static const String serverFailureMessage = 'Server Failure';
+  static const String serverFailureCode = '402';
+  static const String cacheFailureMessage = 'Cache Failure';
+  static const String cacheFailureCode = '101';
+  static const String platformExceptionMessage = "Platform Exception Occurred";
+  static const String noInternetMessage = 'No internet found';
+  static const String noInternetCode = '401';
+  static const String noDirectorNameError = 'Please add director name';
+  static const String noMovieNameError = 'Please add movie name';
 }

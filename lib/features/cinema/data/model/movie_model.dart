@@ -1,3 +1,4 @@
+import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 
 class MovieModel extends MovieEntity {
@@ -31,33 +32,36 @@ class MovieModel extends MovieEntity {
 
   factory MovieModel.from(Map<dynamic, dynamic> map) {
     return MovieModel(
-      id: map['id'],
-      name: map['name'],
-      poster: map['poster'],
-      releaseDate: map['releaseDate'],
-      runtime: map['runtime'],
-      genre: map['genre'],
-      plot: map['plot'],
-      imdbId: map['imdbId'],
-      imdbRating: map['imdbRating'],
-      director: map['director'],
-      isBookmarked: map['isBookmarked'],
-      isDeleted: map['isDeleted'],
+      id: map.containsKey('id') ? map['id'] : '',
+      name: map['Title'],
+      poster: map['Poster'].contains('N/A')
+          ? CommonConstants.emptyImagePLaceHolder
+          : map['Poster'],
+      releaseDate: map['Released'],
+      runtime: map['Runtime'],
+      genre: map['Genre'],
+      plot: map['Plot'],
+      imdbId: map['imdbID'],
+      imdbRating: map['imdbRating'].contains('N/A') ? '0' : map['imdbRating'],
+      director: map['Director'],
+      isBookmarked:
+          map.containsKey('isBookmarked') ? map['isBookmarked'] : false,
+      isDeleted: map.containsKey('isDeleted') ? map['isDeleted'] : false,
     );
   }
 
   Map<dynamic, dynamic> toJson() {
     return <String, dynamic>{
+      'Title': name,
       'id': id,
-      'name': name,
-      'poster': poster,
-      'releaseDate': releaseDate,
-      'runtime': runtime,
-      'genre': genre,
-      'plot': plot,
-      'imdbId': imdbId,
+      'Poster': poster,
+      'Released': releaseDate,
+      'Runtime': runtime,
+      'Genre': genre,
+      'Plot': plot,
+      'imdbID': imdbId,
       'imdbRating': imdbRating,
-      'director': director,
+      'Director': director,
       'isBookmarked': isBookmarked,
       'isDeleted': isDeleted,
     };

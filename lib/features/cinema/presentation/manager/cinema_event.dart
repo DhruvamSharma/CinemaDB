@@ -11,3 +11,10 @@ class RegisterMovieEvent extends CinemaEvent {
   @override
   List<Object?> get props => [movie];
 }
+
+class FetchMovieDetailsEvent extends CinemaEvent {
+  const FetchMovieDetailsEvent({required this.movieName});
+  final String movieName;
+  @override
+  List<Object?> get props => [movieName];
+}

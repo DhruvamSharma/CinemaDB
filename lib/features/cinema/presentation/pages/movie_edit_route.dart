@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/common_ui/common_textfield.dart';
 import 'package:cinema_db/core/custom_colors.dart';
 import 'package:cinema_db/core/image_picker_utils.dart';
+import 'package:cinema_db/core/movie_errors.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_bloc.dart';
 import 'package:cinema_db/features/cinema/presentation/manager/cinema_event.dart';
@@ -94,9 +96,12 @@ class MovieEditRoute extends StatelessWidget {
                           child: const Text(CommonConstants.updateMovieTitle),
                           color: CommonColors.buttonColorDark,
                           onPressed: () {
-                            BlocProvider.of<CinemaBloc>(context).add(
-                                RegisterMovieEvent(
-                                    movie: createMovie(context)));
+                            if (MovieErrors.canPostMovie(context)) {
+                              BlocProvider.of<CinemaBloc>(context).add(
+                                  RegisterMovieEvent(
+                                      movie: createMovie(context)));
+                              Navigator.pop(context);
+                            }
                           },
                         ),
                       ),
@@ -158,10 +163,16 @@ class MovieEditRoute extends StatelessWidget {
   }
 
   Widget buildImageWithShade(BuildContext context, bool isPrimary) {
-    final imageWidget = Image.file(
-      File(Provider.of<MovieDetailsProvider>(context).poster),
-      fit: BoxFit.cover,
-    );
+    final posterUrl = Provider.of<MovieDetailsProvider>(context).poster;
+    final imageWidget = posterUrl.contains('http')
+        ? CachedNetworkImage(
+            imageUrl: posterUrl,
+            fit: BoxFit.cover,
+          )
+        : Image.file(
+            File(posterUrl),
+            fit: BoxFit.cover,
+          );
 
     if (isPrimary) {
       return imageWidget;
