@@ -50,26 +50,52 @@ class _MovieRegisterButtonState extends State<MovieRegisterButton> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Found more details for this movie',
+                        CommonConstants.moreDetailsOfMovie,
                         style: Theme.of(context).textTheme.subtitle1!.copyWith(
                               color: CommonColors.lightColor.withOpacity(0.5),
                             ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: CommonConstants.equalPadding / 2),
-                        child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(CommonConstants.cardRadius),
-                          child: SizedBox(
-                            height: 80,
-                            width: 70,
-                            child: CachedNetworkImage(
-                              imageUrl: fetchedMovie.poster,
-                              fit: BoxFit.cover,
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: CommonConstants.equalPadding / 2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  CommonConstants.cardRadius),
+                              child: SizedBox(
+                                height: 80,
+                                width: 70,
+                                child: CachedNetworkImage(
+                                  imageUrl: fetchedMovie.poster,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: CommonConstants.equalPadding,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fetchedMovie.releaseDate ?? '',
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                                Text(
+                                  fetchedMovie.genre ?? '',
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                                Text(
+                                  fetchedMovie.runtime ?? '',
+                                  style: Theme.of(context).textTheme.caption,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
