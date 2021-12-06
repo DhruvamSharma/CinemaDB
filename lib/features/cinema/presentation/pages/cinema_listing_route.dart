@@ -1,11 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cinema_db/core/auth_utils.dart';
 import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/common_ui/common_textfield.dart';
+import 'package:cinema_db/core/common_ui/profile_image.dart';
 import 'package:cinema_db/core/custom_colors.dart';
 import 'package:cinema_db/features/cinema/data/model/movie_model.dart';
 import 'package:cinema_db/features/cinema/domain/entity/movie_entity.dart';
 import 'package:cinema_db/features/cinema/presentation/pages/movie_creation_route.dart';
+import 'package:cinema_db/features/cinema/presentation/pages/movie_view_route.dart';
 import 'package:cinema_db/features/cinema/presentation/widgets/movie_item.dart';
 import 'package:cinema_db/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -36,24 +37,14 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
+            const Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.only(
+                padding: EdgeInsets.only(
                   right: CommonConstants.equalPadding * 2 - 10,
                   top: CommonConstants.equalPadding * 3,
                 ),
-                child: GestureDetector(
-                  onTap: () async {
-                    final isSignedIn = await authUtils.isSignedIn();
-                  },
-                  child: CircleAvatar(
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                          imageUrl: authUtils.getProfilePicture()),
-                    ),
-                  ),
-                ),
+                child: ProfileImage(),
               ),
             ),
             Padding(
@@ -96,9 +87,15 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, MovieCreationRoute.routeName);
+                        onPressed: () async {
+                          if (await authUtils.isSignedIn()) {
+                            Navigator.pushNamed(
+                                context, MovieCreationRoute.routeName);
+                          } else {
+                            await authUtils.signIn();
+                            Navigator.pushNamed(
+                                context, MovieCreationRoute.routeName);
+                          }
                         },
                         icon: Icon(
                           Icons.create,
@@ -124,7 +121,7 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
                         const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             mainAxisSpacing: 20.0,
-                            childAspectRatio: 0.6,
+                            childAspectRatio: 0.55,
                             crossAxisSpacing: 20.0),
                     itemBuilder: (_, index) {
                       final item = box.getAt(index);
@@ -148,7 +145,7 @@ class _CinemaListingRouteState extends State<CinemaListingRoute> {
   ) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, MovieCreationRoute.routeName);
+        Navigator.pushNamed(context, MovieViewRoute.routeName, arguments: item);
       },
       child: MovieItem(data: item),
     );

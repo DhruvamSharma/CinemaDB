@@ -21,7 +21,7 @@ class MovieItem extends StatelessWidget {
           children: [
             if (data.poster.isNotEmpty)
               Hero(
-                tag: data.poster.isEmpty ? UniqueKey().toString() : data.poster,
+                tag: data.id,
                 child: Container(
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
@@ -39,7 +39,7 @@ class MovieItem extends StatelessWidget {
               )
             else
               Hero(
-                tag: data.poster.isEmpty ? UniqueKey().toString() : data.poster,
+                tag: data.id,
                 child: Container(
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(

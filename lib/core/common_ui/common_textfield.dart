@@ -2,16 +2,35 @@ import 'package:cinema_db/core/common_constants.dart';
 import 'package:cinema_db/core/custom_colors.dart';
 import 'package:flutter/material.dart';
 
-class CommonTextField extends StatelessWidget {
+class CommonTextField extends StatefulWidget {
   const CommonTextField(
       {required this.onChanged,
       this.showIcon = false,
+      this.initialValue,
       this.label = CommonConstants.searchTitle,
       Key? key})
       : super(key: key);
   final Function onChanged;
   final bool showIcon;
   final String label;
+  final String? initialValue;
+
+  @override
+  State<CommonTextField> createState() => _CommonTextFieldState();
+}
+
+class _CommonTextFieldState extends State<CommonTextField> {
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    if (widget.initialValue != null) {
+      controller = TextEditingController(text: widget.initialValue);
+    } else {
+      controller = TextEditingController();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +42,12 @@ class CommonTextField extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: CommonConstants.equalPadding),
         child: TextField(
-          onChanged: (_) => onChanged(_),
+          controller: controller,
+          onChanged: (_) => widget.onChanged(_),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: label,
-            icon: showIcon ? const Icon(Icons.search) : const SizedBox(),
+            hintText: widget.label,
+            icon: widget.showIcon ? const Icon(Icons.search) : const SizedBox(),
           ),
         ),
       ),

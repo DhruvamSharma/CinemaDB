@@ -11,6 +11,8 @@ class CommonConstants {
   static const String directorNameLabel = "Director's Name";
   static const String registerMovieTitle = 'Add to Collection';
   static const String cancelTitle = 'Cancel';
+  static const String editMovieTitle = 'Edit Movie';
+  static const String updateMovieTitle = 'Update Collection';
 
   // dimensions
   static const double cardRadius = 10.0;
@@ -18,5 +20,5 @@ class CommonConstants {
 
   // urls
   static const String profileUrl =
-      'https://cdn.dribbble.com/users/1577045/screenshots/4914645/media/028d394ffb00cb7a4b2ef9915a384fd9.png?compress=1&resize=400x300';
+      'https://weareroast.com/wp-content/uploads/2018/10/925000521s.png';
 }
