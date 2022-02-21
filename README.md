@@ -31,4 +31,3 @@
   <img src="https://github.com/DhruvamSharma/CinemaDB/blob/main/github_assets/ios_detail.png" width="400" /> 
 </p>
 
-A Flutter Project for Yellow Class Assignment
